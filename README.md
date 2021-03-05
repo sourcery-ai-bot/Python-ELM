@@ -1,6 +1,8 @@
 Python-ELM v0.3
 ===============
 
+__---> ARCHIVED March 2021 <---__
+
 ###### This is an implementation of the [Extreme Learning Machine](http://www.extreme-learning-machines.org) [1][2] in Python, based on [scikit-learn](http://scikit-learn.org).
 
 ###### From the abstract:
