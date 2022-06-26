@@ -186,12 +186,11 @@ class GenELMRegressor(BaseELM, RegressorMixin):
 
     def _get_predictions(self):
         """get predictions using internal least squares/supplied regressor"""
-        if (self.regressor is None):
-            preds = safe_sparse_dot(self.hidden_activations_, self.coefs_)
-        else:
-            preds = self.regressor.predict(self.hidden_activations_)
-
-        return preds
+        return (
+            safe_sparse_dot(self.hidden_activations_, self.coefs_)
+            if (self.regressor is None)
+            else self.regressor.predict(self.hidden_activations_)
+        )
 
     def predict(self, X):
         """
@@ -212,10 +211,7 @@ class GenELMRegressor(BaseELM, RegressorMixin):
         # compute hidden layer activations
         self.hidden_activations_ = self.hidden_layer.transform(X)
 
-        # compute output predictions for new hidden activations
-        predictions = self._get_predictions()
-
-        return predictions
+        return self._get_predictions()
 
 
 class GenELMClassifier(BaseELM, ClassifierMixin):
@@ -328,9 +324,7 @@ class GenELMClassifier(BaseELM, ClassifierMixin):
             Predicted values.
         """
         raw_predictions = self.decision_function(X)
-        class_predictions = self.binarizer.inverse_transform(raw_predictions)
-
-        return class_predictions
+        return self.binarizer.inverse_transform(raw_predictions)
 
 
 # ELMRegressor with default RandomLayer
@@ -606,9 +600,7 @@ class ELMClassifier(ELMRegressor):
             Predicted values.
         """
         raw_predictions = self.decision_function(X)
-        class_predictions = self.binarizer.inverse_transform(raw_predictions)
-
-        return class_predictions
+        return self.binarizer.inverse_transform(raw_predictions)
 
     def score(self, X, y):
         """Force use of accuracy score since we don't inherit

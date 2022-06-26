@@ -56,11 +56,11 @@ class BaseRandomLayer(BaseEstimator, TransformerMixin):
         self.activation_func = activation_func
         self.activation_args = activation_args
 
-        self.components_ = dict()
+        self.components_ = {}
         self.input_activations_ = None
 
         # keyword args for internally defined funcs
-        self._extra_args = dict()
+        self._extra_args = {}
 
     @abstractmethod
     def _generate_components(self, X):
@@ -81,15 +81,13 @@ class BaseRandomLayer(BaseEstimator, TransformerMixin):
         acts = self.input_activations_
 
         if (callable(self.activation_func)):
-            args_dict = self.activation_args if (self.activation_args) else {}
-            X_new = self.activation_func(acts, **args_dict)
+            args_dict = self.activation_args or {}
+            return self.activation_func(acts, **args_dict)
         else:
             func_name = self.activation_func
             func = self._internal_activation_funcs[func_name]
 
-            X_new = func(acts, **self._extra_args)
-
-        return X_new
+            return func(acts, **self._extra_args)
 
     # perform fit by generating random components based
     # on the input array
